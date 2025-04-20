@@ -81,3 +81,9 @@ jobs:
           ${{ steps.strings.outputs.build-output-dir }}/bin/*
           ${{ steps.strings.outputs.build-output-dir }}/lib/*
         if-no-files-found: warn
+    - name: Verify build outputs
+      run: |
+        echo "Contenuto della cartella bin:"
+        ls -la ${{ steps.strings.outputs.build-output-dir }}/bin
+        echo "Contenuto della cartella lib:"
+        ls -la ${{ steps.strings.outputs.build-output-dir }}/lib
