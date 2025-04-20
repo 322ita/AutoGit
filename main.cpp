@@ -43,7 +43,12 @@ int main(int argc, char *argv[]) {
 
 bool gitCheck(){
     cout<<"Controllo se git è installato..."<<endl;
-    string ris = _WIN32 ? "NUL 2>&1" : "/dev/null 2>&1";
+    string ris;
+    #ifdef _WIN32
+        ris = "NUL 2>&1";
+    #else
+        ris = "/dev/null 2>&1";
+    #endif
     string command = "git --version > " + ris;
     int result = system(command.c_str());
     return result == 0;
