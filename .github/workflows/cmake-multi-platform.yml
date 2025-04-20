@@ -48,19 +48,26 @@ jobs:
 
     - name: Verify build outputs
       run: |
-        echo "Bin directory contents:"
-        if [ -d "${{ steps.strings.outputs.build-output-dir }}/bin" ]; then
-          ls -la ${{ steps.strings.outputs.build-output-dir }}/bin
+        if [[ "${{ runner.os }}" == "Linux" ]]; then
+          echo "Bin directory contents (Linux):"
+          ls -la "${{ steps.strings.outputs.build-output-dir }}/bin"
+          echo "Lib directory contents (Linux):"
+          ls -la "${{ steps.strings.outputs.build-output-dir }}/lib" || true
         else
-          echo "Bin directory not found!"
+          echo "Bin directory contents (Windows):"
+          if (Test-Path "${{ steps.strings.outputs.build-output-dir }}\bin") {
+            Get-ChildItem -Path "${{ steps.strings.outputs.build-output-dir }}\bin" -Force
+          } else {
+            Write-Output "Bin directory not found!"
+          }
+          echo "Lib directory contents (Windows):"
+          if (Test-Path "${{ steps.strings.outputs.build-output-dir }}\lib") {
+            Get-ChildItem -Path "${{ steps.strings.outputs.build-output-dir }}\lib" -Force
+          } else {
+            Write-Output "Lib directory not found (no libraries generated)"
+          }
         fi
-
-        echo "Lib directory contents:"
-        if [ -d "${{ steps.strings.outputs.build-output-dir }}/lib" ]; then
-          ls -la ${{ steps.strings.outputs.build-output-dir }}/lib
-        else
-          echo "Lib directory not found (no libraries generated)"
-        fi
+      shell: bash
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
