@@ -30,7 +30,6 @@ int main(int argc, char *argv[]) {
     system("git add .");
 
     cout<<"eseguendo il commit..."<<endl;
-    cout<<"comando: "<<comando<<endl;
     system(comando.c_str());
 
     cout<<"mandando al branch "<<branch<<endl;
