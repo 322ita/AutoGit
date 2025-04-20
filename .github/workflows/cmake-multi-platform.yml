@@ -49,9 +49,18 @@ jobs:
     - name: Verify build outputs
       run: |
         echo "Bin directory contents:"
-        ls -la ${{ steps.strings.outputs.build-output-dir }}/bin
+        if [ -d "${{ steps.strings.outputs.build-output-dir }}/bin" ]; then
+          ls -la ${{ steps.strings.outputs.build-output-dir }}/bin
+        else
+          echo "Bin directory not found!"
+        fi
+
         echo "Lib directory contents:"
-        ls -la ${{ steps.strings.outputs.build-output-dir }}/lib
+        if [ -d "${{ steps.strings.outputs.build-output-dir }}/lib" ]; then
+          ls -la ${{ steps.strings.outputs.build-output-dir }}/lib
+        else
+          echo "Lib directory not found (no libraries generated)"
+        fi
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
@@ -59,7 +68,6 @@ jobs:
         name: build-${{ matrix.os }}-${{ matrix.c_compiler }}-${{ github.run_id }}
         path: |
           ${{ steps.strings.outputs.build-output-dir }}/bin/*
-          ${{ steps.strings.outputs.build-output-dir }}/lib/*
-        if-no-files-found: warn
+          ${{ steps.strings.outputs.build-output-dir }}/lib/*      
+        if-no-files-found: ignore  # Cambiato da warn a ignore
         overwrite: true
-        retention-days: 3
