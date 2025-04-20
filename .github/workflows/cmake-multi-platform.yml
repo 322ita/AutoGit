@@ -54,18 +54,21 @@ jobs:
           echo "Lib directory contents (Linux):"
           ls -la "${{ steps.strings.outputs.build-output-dir }}/lib" || true
         else
-          echo "Bin directory contents (Windows):"
-          if (Test-Path "${{ steps.strings.outputs.build-output-dir }}\bin") {
-            Get-ChildItem -Path "${{ steps.strings.outputs.build-output-dir }}\bin" -Force
-          } else {
-            Write-Output "Bin directory not found!"
-          }
-          echo "Lib directory contents (Windows):"
-          if (Test-Path "${{ steps.strings.outputs.build-output-dir }}\lib") {
-            Get-ChildItem -Path "${{ steps.strings.outputs.build-output-dir }}\lib" -Force
-          } else {
-            Write-Output "Lib directory not found (no libraries generated)"
-          }
+          echo "Writing Windows verification script..."
+          powershell -Command "& {
+            Write-Output 'Bin directory contents (Windows):'
+            if (Test-Path '${{ steps.strings.outputs.build-output-dir }}\bin') {
+              Get-ChildItem -Path '${{ steps.strings.outputs.build-output-dir }}\bin' -Force
+            } else {
+              Write-Output 'Bin directory not found!'
+            }
+            Write-Output 'Lib directory contents (Windows):'
+            if (Test-Path '${{ steps.strings.outputs.build-output-dir }}\lib') {
+              Get-ChildItem -Path '${{ steps.strings.outputs.build-output-dir }}\lib' -Force
+            } else {
+              Write-Output 'Lib directory not found (no libraries generated)'
+            }
+          }"
         fi
       shell: bash
 
